@@ -14,12 +14,14 @@ import {
   TableHeader,
   TableRow,
   Tile,
+  Button,
 } from '@carbon/react';
-import { useLayoutType, isDesktop, useConfig, usePagination, ErrorState } from '@openmrs/esm-framework';
+import { useLayoutType, isDesktop, useConfig, usePagination, ErrorState, navigate } from '@openmrs/esm-framework';
 import { EmptyDataIllustration, EmptyState } from '@openmrs/esm-patient-common-lib';
 import styles from './billable-services.scss';
 import { useTranslation } from 'react-i18next';
 import { useBillableServices } from './billable-service.resource';
+import { ArrowRight } from '@carbon/react/icons';
 
 const BillableServices = () => {
   const { t } = useTranslation();
@@ -30,6 +32,10 @@ const BillableServices = () => {
   const responsiveSize = isDesktop(layout) ? 'sm' : 'lg';
   const pageSizes = config?.billableServices?.pageSizes ?? [10, 20, 30, 40, 50];
   const [pageSize, setPageSize] = useState(config?.billableServices?.pageSize ?? 10);
+
+  //creating service state
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [overlayHeader, setOverlayTitle] = useState('');
 
   const headerData = [
     {
@@ -49,8 +55,8 @@ const BillableServices = () => {
       key: 'status',
     },
     {
-      header: t('dateCreated', 'Date Created'),
-      key: 'dateCreated',
+      header: t('prices', 'Prices'),
+      key: 'prices',
     },
     {
       header: t('actions', 'Actions'),
@@ -74,16 +80,38 @@ const BillableServices = () => {
 
   const { paginated, goTo, results, currentPage } = usePagination(searchResults, pageSize);
 
-  const rowData = results?.map((service, index) => ({
-    id: `${index}`,
-    uuid: service.uuid,
-    serviceName: service.name,
-    shortName: service.shortName,
-    serviceType: service.serviceType.display,
-    status: service.serviceStatus,
-    dateCreated: '--',
-    actions: '--',
-  }));
+  let rowData = [];
+  if (results) {
+    results.forEach((service, index) => {
+      const s = {
+        id: `${index}`,
+        uuid: service.uuid,
+        serviceName: service.name,
+        shortName: service.shortName,
+        serviceType: service.serviceType.display,
+        status: service.serviceStatus,
+        prices: '--',
+        actions: '--',
+      };
+      let cost = '';
+      service.servicePrices.forEach((price) => {
+        cost += `${price.name} (${price.price}) `;
+      });
+      s.prices = cost;
+      rowData.push(s);
+    });
+  }
+
+  // const rowData = results?.map((service, index) => ({
+  //   id: `${index}`,
+  //   uuid: service.uuid,
+  //   serviceName: service.name,
+  //   shortName: service.shortName,
+  //   serviceType: service.serviceType.display,
+  //   status: service.serviceStatus,
+  //   prices: service.servicePrices[0].name + service.servicePrices[0].price,
+  //   actions: '--',
+  // }));
 
   const handleSearch = useCallback(
     (e) => {
@@ -108,6 +136,19 @@ const BillableServices = () => {
 
   return (
     <>
+      <div className={styles.metricsContainer}>
+        <Button
+          className={styles.actionBtn}
+          kind="tertiary"
+          renderIcon={(props) => <ArrowRight size={16} {...props} />}
+          onClick={() => {
+            navigate({ to: window.getOpenmrsSpaBase() + 'billable-services/add-service' });
+          }}
+          iconDescription={t('addNewBillableService', 'Add new billable service')}>
+          {t('addNewService', 'Add new service')}
+        </Button>
+      </div>
+
       {billableServices?.length > 0 ? (
         <div className={styles.serviceContainer}>
           <FilterableTableHeader
