@@ -16,7 +16,15 @@ import {
   Tile,
   Button,
 } from '@carbon/react';
-import { useLayoutType, isDesktop, useConfig, usePagination, ErrorState, navigate } from '@openmrs/esm-framework';
+import {
+  useLayoutType,
+  isDesktop,
+  useConfig,
+  usePagination,
+  ErrorState,
+  navigate,
+  showModal,
+} from '@openmrs/esm-framework';
 import { EmptyDataIllustration, EmptyState } from '@openmrs/esm-patient-common-lib';
 import styles from './billable-services.scss';
 import { useTranslation } from 'react-i18next';
@@ -121,6 +129,12 @@ const BillableServices = () => {
     [goTo, setSearchString],
   );
 
+  const handleBulkImportClick = useCallback(() => {
+    const dispose = showModal('billabl-e-services-bulk-import', {
+      closeModal: () => dispose(),
+    });
+  }, []);
+
   if (isLoading) {
     <InlineLoading status="active" iconDescription="Loading" description="Loading data..." />;
   }
@@ -146,6 +160,14 @@ const BillableServices = () => {
           }}
           iconDescription={t('addNewBillableService', 'Add new billable service')}>
           {t('addNewService', 'Add new service')}
+        </Button>
+        <Button
+          className={styles.actionBtn}
+          kind="ghost"
+          renderIcon={(props) => <ArrowRight size={16} {...props} />}
+          onClick={handleBulkImportClick}
+          iconDescription={t('bulkImport', 'Bulk Import')}>
+          {t('bulkImport', 'Bulk Import')}
         </Button>
       </div>
 

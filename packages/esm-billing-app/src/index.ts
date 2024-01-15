@@ -1,4 +1,4 @@
-import { defineConfigSchema, getSyncLifecycle } from '@openmrs/esm-framework';
+import { defineConfigSchema, getAsyncLifecycle, getSyncLifecycle } from '@openmrs/esm-framework';
 import { createDashboardLink } from '@openmrs/esm-patient-common-lib';
 import { createLeftPanelLink } from './left-panel-link.component';
 import { configSchema } from './config-schema';
@@ -41,3 +41,7 @@ export const billingPatientSummary = getSyncLifecycle(BillHistory, options);
 export const billingCheckInForm = getSyncLifecycle(BillingCheckInForm, options);
 export const billableServicesHome = getSyncLifecycle(BillableServiceHome, options);
 export const billableServicesCardLink = getSyncLifecycle(BillableServicesCardLink, options);
+export const billableServicesBulkImportDialog = getAsyncLifecycle(
+  () => import('./billable-services/bulk-import/bulk-import.component'),
+  options,
+);

@@ -33,3 +33,16 @@ export const createBillableSerice = (payload: any) => {
     },
   });
 };
+
+export async function uploadBillableServices(body: any) {
+  const abortController = new AbortController();
+
+  return openmrsFetch(`/ws/rest/v1/cashier/api/upload-file`, {
+    method: 'POST',
+    // headers: {
+    //   'Content-Type': 'application/json',
+    // },
+    signal: abortController.signal,
+    body: body,
+  });
+}
