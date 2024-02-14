@@ -69,6 +69,11 @@
       "component": "visitAttributeTags",
       "slot": "patient-banner-tags-slot",
       "order": 2
+    },
+    {
+      "name": "stock-item-batches",
+      "slot": "dispensing_stock_item_batch_selection-slot",
+      "component": "stockItemBatches"
     }
   ]
 }

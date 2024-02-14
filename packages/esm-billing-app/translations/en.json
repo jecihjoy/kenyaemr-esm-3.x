@@ -9,6 +9,7 @@
   "amountToWaiveAriaLabel": "Enter amount to waive",
   "amountToWaiveHelper": "Specify the amount to be deducted from the bill",
   "amountToWaiveLabel": "Amount to Waive",
+  "batchNumber": "Batch Numbers",
   "billableService": "Billable service",
   "billableServices": "Billable Services",
   "billedItems": "Billed Items",
